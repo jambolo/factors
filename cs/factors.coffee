@@ -127,6 +127,14 @@ primes = [
   7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919
 ]
 
+factorIf = (n, p, stop, factors) ->
+  if n % p == 0
+    while n % p == 0
+      factors.push p
+      n = n / p
+    stop = Math.ceil(Math.sqrt(n))
+  [ n, stop ]
+
 factors = []
 
 n = args.number
@@ -135,22 +143,13 @@ stop = Math.ceil(Math.sqrt(n))
 
 # First check the table of known primes
 for p in primes
-  if p > stop
-    break
-  if n % p is 0
-    while n % p is 0
-      factors.push p
-      n = n / p
-    stop = Math.ceil(Math.sqrt(n))
+  break if p > stop
+  [ n, stop ] = factorIf n, p, stop, factors
 
 # Try each odd number after the last prime in the table
 p = primes[primes.length - 1] + 2
 while p <= stop
-  if n % p is 0
-    while n % p is 0
-      factors.push p
-      n = n / p
-    stop = Math.ceil(Math.sqrt(n))
+  [ n, stop ] = factorIf n, p, stop, factors
   p += 2
 
 # If the remaining number is not 1, then it must be a prime factor
